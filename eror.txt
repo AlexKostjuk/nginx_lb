@@ -1,1 +1,122 @@
-https://github.com/AlexKostjuk/nginx_lb
+
+PS C:\Prodgect\nginx_lb> docker compose ps   
+NAME               IMAGE          COMMAND                  SERVICE   CREATED         STATUS         PORTScp
+nginx_lb-app2-1    nginx:alpine   "/docker-entrypoint.…"   app2      5 minutes ago   Up 5 minutes   80/tcp
+nginx_lb-nginx-1   nginx:alpine   "/docker-entrypoint.…"   nginx     5 minutes ago   Up 5 minutes   0.0.0.0:8080->80/tcp
+PS C:\Prodgect\nginx_lb> docker compose exec app1 wget -q0-localhost
+wget: unrecognized option: 0
+BusyBox v1.37.0 (2026-01-10 15:38:28 UTC) multi-call binary.
+
+Usage: wget [-cqS] [--spider] [-O FILE] [-o LOGFILE] [--header STR]
+        [--post-data STR | --post-file FILE] [-Y on/off]
+        [-P DIR] [-U AGENT] [-T SEC] URL...
+
+Retrieve files via HTTP or FTP
+
+        --spider        Only check URL existence: $? is 0 if exists
+        --header STR    Add STR (of form 'header: value') to headers
+        --post-data STR Send STR using POST method
+        --post-file FILE        Send FILE using POST method
+        -c              Continue retrieval of aborted transfer
+        -q              Quiet
+        -P DIR          Save to DIR (default .)
+        -S              Show server response
+        -T SEC          Network read timeout is SEC seconds
+        -O FILE         Save to FILE ('-' for stdout)
+        -U STR          Use STR for User-Agent header
+        -Y on/off       Use proxy
+
+What's next:
+    Debug this Compose error with Gordon → docker ai "help me fix this compose error"
+PS C:\Prodgect\nginx_lb> docker compose exec app1 wget -qO- localhost
+<!DOCTYPE html> 
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Server 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e9bcdc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 40px;
+        }
+        h1 {
+            color: #2e045e;
+            font-size: 3em;
+        }
+    </style>
+<body>
+    <h1>Server 1</h1>
+    <p>This is the first application.</p>
+</body>
+</html>
+PS C:\Prodgect\nginx_lb> docker compose exec app2 wget -qO- localhost
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Server_2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #98a2b3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 40px;
+        }
+        h1 {
+            color: #0f4004;
+            font-size: 3em;
+        }
+    </style>
+<body>
+    <h1>Server_2</h1>
+    <p>This is the second application.</p>
+</body>
+</html>
+PS C:\Prodgect\nginx_lb> docker compose logs -f nginx                
+nginx-1  | /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+nginx-1  | /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+nginx-1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+nginx-1  | 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.confnginx-1  | 10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
+nginx-1  | /docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+nginx-1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+nginx-1  | /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+nginx-1  | /docker-entrypoint.sh: Configuration complete; ready for start up
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:14:54 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:14:56 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:14:57 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:14:58 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:00 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:07 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:09 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:11 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:14 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:45 +0000] "GET / HTTP/1.1" 200 614 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:46 +0000] "GET /favicon.ico HTTP/1.1" 404 555 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:50 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:15:51 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:01 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:04 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:05 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:14 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:20 +0000] "GET / HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:24 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:26 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:16:55 +0000] "GET /?3 HTTP/1.1" 200 614 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:17:03 +0000] "GET /?31 HTTP/1.1" 200 614 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:17:10 +0000] "GET /?311 HTTP/1.1" 200 614 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:17:12 +0000] "GET /?311 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:25:19 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:25:22 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:25:26 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:25:31 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
+nginx-1  | 172.18.0.1 - - [05/Oct/2026:11:25:39 +0000] "GET /?3 HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36"
